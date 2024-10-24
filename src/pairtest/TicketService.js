@@ -86,4 +86,38 @@ export default class TicketService {
       );
     }
   }
+
+  /**
+   * Counts the number of tickets requested for each ticket type.
+   *
+   * @private
+   * @param {TicketTypeRequest[]} ticketTypeRequests - Array of ticket requests
+   * @returns {Object} Object containing counts for each ticket type
+   * @throws {InvalidPurchaseException} When ticket count is negative
+   */
+  #countTicketsByType(ticketTypeRequests) {
+    return ticketTypeRequests.reduce(
+      (counts, request) => {
+        const ticketType = request.getTicketType();
+        const numberOfTickets = request.getNoOfTickets();
+
+        if (numberOfTickets < 0) {
+          throw new InvalidPurchaseException(
+            "Number of tickets cannot be negative"
+          );
+        }
+        /** Increment the count for the given ticketType. Initialize the count to 0 if it doesn't exist,
+         * then increment it by the number of tickets
+         * */
+        counts[ticketType] = (counts[ticketType] || 0) + numberOfTickets;
+        return counts;
+      },
+      {
+        // defaults
+        ADULT: 0,
+        CHILD: 0,
+        INFANT: 0,
+      }
+    );
+  }
 }
