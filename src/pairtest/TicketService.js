@@ -47,7 +47,7 @@ export default class TicketService {
    */
   purchaseTickets(accountId, ...ticketTypeRequests) {
     if (!ticketTypeRequests?.length) {
-      throw new InvalidPurchaseException("No tickets requested");
+      throw new InvalidPurchaseException("No tickets requested.");
     }
   }
 
@@ -60,7 +60,7 @@ export default class TicketService {
    */
   #validateAccountId(accountId) {
     if (!Number.isInteger(accountId) || accountId <= 0) {
-      throw new InvalidPurchaseException("Invalid account ID");
+      throw new InvalidPurchaseException("Invalid account ID.");
     }
   }
 
@@ -77,12 +77,12 @@ export default class TicketService {
       0
     );
     if (totalTickets === 0) {
-      throw new InvalidPurchaseException("No tickets requested");
+      throw new InvalidPurchaseException("No tickets requested.");
     }
 
     if (totalTickets > 25) {
       throw new InvalidPurchaseException(
-        "Cannot purchase more than 25 tickets"
+        "Cannot purchase more than 25 tickets."
       );
     }
   }
@@ -103,7 +103,7 @@ export default class TicketService {
 
         if (numberOfTickets < 0) {
           throw new InvalidPurchaseException(
-            "Number of tickets cannot be negative"
+            "Number of tickets cannot be negative."
           );
         }
         /** Increment the count for the given ticketType. Initialize the count to 0 if it doesn't exist,
@@ -119,5 +119,27 @@ export default class TicketService {
         INFANT: 0,
       }
     );
+  }
+  /**
+   * Validates ticket combinations.
+   * - At least one adult ticket is required
+   * - Number of infant tickets cannot exceed adult tickets
+   *
+   * @private
+   * @param {Object} ticketCounts - Object containing counts for each ticket type
+   * @throws {InvalidPurchaseException} When ticket combination violates rules
+   */
+
+  #validateTicketRules(ticketCounts) {
+    if (ticketCounts.ADULT === 0) {
+      throw new InvalidPurchaseException(
+        "At least one adult ticket is required."
+      );
+    }
+    if (ticketCounts.INFANT > ticketCounts.ADULT) {
+      throw new InvalidPurchaseException(
+        "Number of infant tickets cannot exceed number of adult tickets."
+      );
+    }
   }
 }
