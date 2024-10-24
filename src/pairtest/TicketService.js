@@ -18,7 +18,7 @@ export default class TicketService {
   /** @type {SeatReservationService} Seat reservation service instance */
   #reservationService;
 
-  /** Ticket price constants
+  /**
    * Ticket prices in GBP for each ticket type
    * @private
    * @static
@@ -30,7 +30,8 @@ export default class TicketService {
     ADULT: 25,
   };
 
-  /** Inject dependencies when this service class is instantiated.
+  /**
+   * Inject dependencies when this service class is instantiated.
    * @constructor
    */
   constructor() {
@@ -41,7 +42,7 @@ export default class TicketService {
   /**
    * Processes the purchase of tickets, including payment and seat reservation.
    *
-   * @param {number} accountId - The account identifier for the purchaser
+   * @param {number} accountId - The account ID for the purchaser
    * @param {...TicketTypeRequest} ticketTypeRequests - One or more ticket requests
    * @throws {InvalidPurchaseException} When purchase violates business rules
    */
@@ -177,7 +178,7 @@ export default class TicketService {
    * @param {Object} ticketCounts - Object containing counts for each ticket type
    * @returns {number} Total number of seats to reserve
    */
-  #calculateSeatsToReserve(tickets) {
+  #calculateSeatsToReserve(ticketCounts) {
     return ticketCounts.ADULT + ticketCounts.CHILD;
   }
 }
