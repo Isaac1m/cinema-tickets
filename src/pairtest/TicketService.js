@@ -49,6 +49,17 @@ export default class TicketService {
     if (!ticketTypeRequests?.length) {
       throw new InvalidPurchaseException("No tickets requested.");
     }
+    this.#validateAccountId(accountId);
+    this.#validateTicketCount(ticketTypeRequests);
+
+    const ticketCounts = this.#countTicketsByType(ticketTypeRequests);
+    this.#validateTicketRules(ticketCounts);
+
+    const totalAmount = this.#calculateTotalAmount(ticketCounts);
+    this.#paymentService.makePayment(accountId, totalAmount);
+
+    const seatsToReserve = this.#calculateSeatsToReserve(ticketCounts);
+    this.#reservationService.reserveSeat(accountId, seatsToReserve);
   }
 
   /**
@@ -141,5 +152,32 @@ export default class TicketService {
         "Number of infant tickets cannot exceed number of adult tickets."
       );
     }
+  }
+
+  /**
+   * Calculates the total amount to be paid for all tickets.
+   *
+   * @private
+   * @param {Object} ticketCounts - Object containing counts for each ticket type
+   * @returns {number} Total amount in GBP
+   */
+  #calculateTotalAmount(ticketCounts) {
+    return Object.entries(ticketCounts).reduce(
+      (total, [type, count]) =>
+        total + TicketService.#TICKET_PRICES[type] * count,
+      0
+    );
+  }
+
+  /**
+   * Calculates the total number of seats to reserve.
+   * Note: Infants don't require seats as they sit on an adult's lap.
+   *
+   * @private
+   * @param {Object} ticketCounts - Object containing counts for each ticket type
+   * @returns {number} Total number of seats to reserve
+   */
+  #calculateSeatsToReserve(tickets) {
+    return ticketCounts.ADULT + ticketCounts.CHILD;
   }
 }
