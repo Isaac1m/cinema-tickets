@@ -30,7 +30,7 @@ export default class TicketService {
     ADULT: 25,
   };
 
-  /** Inject dependencies when this service class is instatiated
+  /** Inject dependencies when this service class is instantiated.
    * @constructor
    */
   constructor() {
@@ -38,5 +38,29 @@ export default class TicketService {
     this.#reservationService = new SeatReservationService();
   }
 
-  purchaseTickets(accountId, ...ticketTypeRequests) {}
+  /**
+   * Processes the purchase of tickets, including payment and seat reservation.
+   *
+   * @param {number} accountId - The account identifier for the purchaser
+   * @param {...TicketTypeRequest} ticketTypeRequests - One or more ticket requests
+   * @throws {InvalidPurchaseException} When purchase violates business rules
+   */
+  purchaseTickets(accountId, ...ticketTypeRequests) {
+    if (!ticketTypeRequests?.length) {
+      throw new InvalidPurchaseException("No tickets requested");
+    }
+  }
+
+  /**
+   * Validates the account ID meets required criteria.
+   *
+   * @private
+   * @param {number} accountId - The account ID to validate
+   * @throws {InvalidPurchaseException} When account ID is invalid
+   */
+  #validateAccountId(accountId) {
+    if (!Number.isInteger(accountId) || accountId <= 0) {
+      throw new InvalidPurchaseException("Invalid account ID");
+    }
+  }
 }
