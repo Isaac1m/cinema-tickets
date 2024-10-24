@@ -63,4 +63,27 @@ export default class TicketService {
       throw new InvalidPurchaseException("Invalid account ID");
     }
   }
+
+  /**
+   * Validates the total number of tickets requested meets business rules.
+   *
+   * @private
+   * @param {TicketTypeRequest[]} ticketTypeRequests - Array of ticket requests
+   * @throws {InvalidPurchaseException} When total tickets exceeds maximum allowed
+   */
+  #validateTicketCount(ticketTypeRequests) {
+    const totalTickets = ticketTypeRequests.reduce(
+      (sum, request) => sum + request.getNoOfTickets(),
+      0
+    );
+    if (totalTickets === 0) {
+      throw new InvalidPurchaseException("No tickets requested");
+    }
+
+    if (totalTickets > 25) {
+      throw new InvalidPurchaseException(
+        "Cannot purchase more than 25 tickets"
+      );
+    }
+  }
 }
